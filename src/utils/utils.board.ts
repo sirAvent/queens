@@ -1,6 +1,10 @@
-import { boardColors, gray } from "../constants/constants.board";
-import { Cell } from "../interfaces/interface.board";
-import { shuffle } from "../utils/utils.format";
+import {
+  boardColors,
+  gray,
+  cellBorderWidth,
+} from "../constants/constants.board";
+import { Cell } from "../types/types.board";
+import { shuffle } from "./utils.format";
 
 const isSafe = (board: Cell[][], row: number, col: number): boolean => {
   for (let i = 0; i < col; i++) {
@@ -23,7 +27,14 @@ const isSafe = (board: Cell[][], row: number, col: number): boolean => {
 
 const solveQueens = (): Cell[][] | null => {
   const board: Cell[][] = Array.from({ length: 8 }, () =>
-    Array.from({ length: 8 }, () => ({ value: "", color: gray }))
+    Array.from({ length: 8 }, () => ({
+      value: "",
+      color: gray,
+      topBorder: 0,
+      bottomBorder: 0,
+      leftBorder: 0,
+      rightBorder: 0,
+    }))
   );
 
   const backtrack = (col: number): boolean => {
@@ -154,6 +165,74 @@ const expandColors = (
   return board;
 };
 
+const updateCellBorders = (board: Cell[][]): Cell[][] => {
+  const numRows = board.length;
+  const numCols = board[0].length;
+  const neighboringBorderWidth = cellBorderWidth * 5;
+
+  return board.map((row, rowIndex) =>
+    row.map((cell, colIndex) => {
+      const updatedCell = { ...cell };
+
+      // Initialize border widths to a smaller value
+      updatedCell.topBorder = cellBorderWidth * 0.5;
+      updatedCell.bottomBorder = cellBorderWidth * 0.5;
+      updatedCell.leftBorder = cellBorderWidth * 0.5;
+      updatedCell.rightBorder = cellBorderWidth * 0.5;
+
+      let hasDifferentNeighbor = false;
+
+      // Check top cell
+      if (rowIndex > 0 && board[rowIndex - 1][colIndex].color !== cell.color) {
+        updatedCell.topBorder = neighboringBorderWidth;
+        hasDifferentNeighbor = true;
+      }
+
+      // Check bottom cell
+      if (
+        rowIndex < numRows - 1 &&
+        board[rowIndex + 1][colIndex].color !== cell.color
+      ) {
+        updatedCell.bottomBorder = neighboringBorderWidth;
+        hasDifferentNeighbor = true;
+      }
+
+      // Check left cell
+      if (colIndex > 0 && board[rowIndex][colIndex - 1].color !== cell.color) {
+        updatedCell.leftBorder = neighboringBorderWidth;
+        hasDifferentNeighbor = true;
+      }
+
+      // Check right cell
+      if (
+        colIndex < numCols - 1 &&
+        board[rowIndex][colIndex + 1].color !== cell.color
+      ) {
+        updatedCell.rightBorder = neighboringBorderWidth;
+        hasDifferentNeighbor = true;
+      }
+
+      // If no different neighbors were found, keep the smaller border
+      if (!hasDifferentNeighbor) {
+        updatedCell.topBorder = cellBorderWidth * 0.5;
+        updatedCell.bottomBorder = cellBorderWidth * 0.5;
+        updatedCell.leftBorder = cellBorderWidth * 0.5;
+        updatedCell.rightBorder = cellBorderWidth * 0.5;
+      }
+
+      // Skip border updates for cells on the edge of the board
+      if (rowIndex === 0) updatedCell.topBorder = neighboringBorderWidth * 2;
+      if (rowIndex === numRows - 1)
+        updatedCell.bottomBorder = neighboringBorderWidth * 2;
+      if (colIndex === 0) updatedCell.leftBorder = neighboringBorderWidth * 2;
+      if (colIndex === numCols - 1)
+        updatedCell.rightBorder = neighboringBorderWidth * 2;
+
+      return updatedCell;
+    })
+  );
+};
+
 export const getBoard = () => {
   let board = solveQueens();
   while (!board) {
@@ -168,7 +247,7 @@ export const getBoard = () => {
 
   const numColors = 8;
   const baseStrength = 0.5; // Represents the central tendency of the color strengths
-  const strengthVariation = 0.7; // Determines deviation from base strength
+  const strengthVariation = 0.8; // Determines deviation from base strength
 
   const colorStrengths = generateColorStrengths(
     numColors,
@@ -192,8 +271,6 @@ export const getBoard = () => {
 
   // Expand colors
   board = expandColors(board, colorStrengths);
-  console.log(JSON.stringify(board));
-  return JSON.stringify(board);
+  board = updateCellBorders(board);
+  return board;
 };
-
-getBoard()
