@@ -5,6 +5,7 @@ import {
 } from "../constants/constants.board";
 import { Cell } from "../types/types.board";
 import { shuffle } from "./utils.format";
+import { encodeBoard, decodeBoard } from "./utils.serialize";
 
 const isSafe = (board: Cell[][], row: number, col: number): boolean => {
   for (let i = 0; i < col; i++) {
@@ -238,10 +239,7 @@ export const getBoard = () => {
   while (!board) {
     board = solveQueens();
   }
-  // Generate 8 unique colors for queens
-  const boardColorMap = boardColors;
-  shuffle(boardColorMap);
-
+  
   // Assign colors to queens
   let queenCount = 0;
 
@@ -258,7 +256,7 @@ export const getBoard = () => {
   for (const row of board) {
     for (const cell of row) {
       if (cell.value === "Q") {
-        const color = boardColorMap[queenCount];
+        const color = boardColors[queenCount];
         cell.color = color;
         // Assign a random strength within the specified range
         const strength =
@@ -268,6 +266,14 @@ export const getBoard = () => {
       }
     }
   }
+
+  // Example of loading a previous board
+  // const past = "IAEAADhERAYoRFQGKIRKBymESqoohEq6KNRESszM7+o="
+  // const pastBoard = decodeBoard(past);
+  // board = expandColors(pastBoard, colorStrengths);
+  // const encoded = encodeBoard(board);
+  // board = updateCellBorders(board);
+  // return board;
 
   // Expand colors
   board = expandColors(board, colorStrengths);
