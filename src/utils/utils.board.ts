@@ -5,7 +5,6 @@ import {
 } from "../constants/constants.board";
 import { Cell } from "../types/types.board";
 import { shuffle } from "./utils.format";
-import { encodeBoard, decodeBoard } from "./utils.serialize";
 
 const isSafe = (board: Cell[][], row: number, col: number): boolean => {
   for (let i = 0; i < col; i++) {
@@ -174,7 +173,7 @@ const updateCellBorders = (board: Cell[][]): Cell[][] => {
   return board.map((row, rowIndex) =>
     row.map((cell, colIndex) => {
       const updatedCell = { ...cell };
-
+      updatedCell.value = "";
       // Initialize border widths to a smaller value
       updatedCell.topBorder = cellBorderWidth * 0.5;
       updatedCell.bottomBorder = cellBorderWidth * 0.5;
@@ -234,7 +233,10 @@ const updateCellBorders = (board: Cell[][]): Cell[][] => {
   );
 };
 
-export const getBoard = () => {
+export const getBoard = (data: Cell[][] | null ) => {
+  if (data) {
+    return updateCellBorders(data);
+  }
   let board = solveQueens();
   while (!board) {
     board = solveQueens();

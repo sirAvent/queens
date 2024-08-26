@@ -26,8 +26,11 @@ export const encodeBoard = (board: Cell[][]) => {
   return base64String;
 };
 
-export const decodeBoard = (base64String: string) => {
+export const decodeBoard = (base64String: string = '') => {
   // Convert base64 to binary string
+  if (base64String === '') {
+    return null;
+  }
   const bytes = Buffer.from(base64String, "base64");
   let binaryString = "";
 
