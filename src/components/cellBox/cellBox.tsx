@@ -4,6 +4,9 @@ import { Cell } from "@/types/types.board";
 
 interface CellBoxProps extends Cell {
   isMouseDown: boolean;
+  clickedValue: string;
+  isClear: boolean;
+  setClickedValue: (value: string) => void;
 }
 
 export default function CellBox({
@@ -14,6 +17,9 @@ export default function CellBox({
   leftBorder,
   rightBorder,
   isMouseDown,
+  clickedValue,
+  setClickedValue,
+  isClear,
 }: CellBoxProps) {
   const [cellValue, setCellValue] = useState("");
 
@@ -30,16 +36,27 @@ export default function CellBox({
     } else if (cellValue === "X") {
       newValue = "Q";
     }
+
+    setClickedValue(cellValue);
     setCellValue(newValue);
   };
 
   const handleMouseEnter = () => {
+    console.log("Hovering over:", cellValue);
     let newValue = "";
     if (isMouseDown) {
-      if (cellValue === "") {
+      if (!isClear && cellValue === "") {
         newValue = "X";
       }
-      setCellValue(newValue);
+      if ((isClear && cellValue !== "") || (!isClear && cellValue === "")) {
+        setCellValue(newValue);
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isMouseDown && isClear) {
+      setCellValue("")
     }
   };
 
@@ -55,6 +72,7 @@ export default function CellBox({
       }}
       onMouseDown={handleClick}
       onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <span>{cellValue === "X" ? "\u2715" : cellValue === "Q" ? "♛" : ""}</span>
     </div>
