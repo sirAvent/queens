@@ -3,10 +3,9 @@ import { useState, useEffect } from "react";
 import { Cell } from "@/types/types.board";
 
 interface CellBoxProps extends Cell {
-  rowInd: number;
-  colInd: number;
   isMouseDown: boolean;
   clickedValue: string;
+  isInvalidated: boolean;
   isClear: boolean;
   setClickedValue: (value: string) => void;
   onUpdateCell: (newValue: string) => void;
@@ -15,8 +14,6 @@ interface CellBoxProps extends Cell {
 export default function CellBox({
   value,
   color,
-  rowInd,
-  colInd,
   topBorder,
   bottomBorder,
   leftBorder,
@@ -25,23 +22,17 @@ export default function CellBox({
   clickedValue,
   setClickedValue,
   isClear,
+  isInvalidated,
   onUpdateCell,
 }: CellBoxProps) {
   const [cellValue, setCellValue] = useState(value);
 
   useEffect(() => {
-    if (cellValue === "Q") {
-      console.log("Queen at", rowInd, colInd);
-    }
-  }, [cellValue]);
+    setCellValue(value);
+  }, [value]);
 
   const handleClick = () => {
-    let newValue = "";
-    if (cellValue === "") {
-      newValue = "X";
-    } else if (cellValue === "X") {
-      newValue = "Q";
-    }
+    let newValue = cellValue === "" ? "X" : cellValue === "X" ? "Q" : "";
 
     setClickedValue(cellValue);
     setCellValue(newValue);
@@ -49,11 +40,9 @@ export default function CellBox({
   };
 
   const handleMouseEnter = () => {
-    let newValue = "";
     if (isMouseDown) {
-      if (!isClear && cellValue === "") {
-        newValue = "X";
-      }
+      let newValue = isClear ? "" : "X";
+
       if ((isClear && cellValue !== "") || (!isClear && cellValue === "")) {
         setCellValue(newValue);
         onUpdateCell(newValue);
@@ -68,13 +57,17 @@ export default function CellBox({
     }
   };
 
+  const cellColor: string = isInvalidated
+    ? `linear-gradient(45deg, ${color} 20%, red 23%, ${color} 26%, ${color} 47%, red 50%, ${color} 53%, ${color} 72%, red 75%, ${color} 78%)`
+    : `${color}`;
+
   return (
     <div
       className={`${
         cellValue === "Q" && "text-[26px] font-bold"
       } flex justify-center items-center border-black h-12 w-12 hover:brightness-125 hover:cursor-pointer select-none`}
       style={{
-        backgroundColor: color,
+        background: cellColor,
         borderTopWidth: topBorder,
         borderBottomWidth: bottomBorder,
         borderLeftWidth: leftBorder,

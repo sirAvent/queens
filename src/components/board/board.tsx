@@ -1,20 +1,27 @@
 import { useState, useEffect } from "react";
 import { Cell } from "@/types/types.board";
 import CellBox from "../cellBox/cellBox";
+import { findMatchingCoordinate } from "@/utils/utils.board";
 
 interface BoardProps {
   data: Cell[][];
   onUpdateBoard: (newData: Cell[][]) => void;
 }
 
-export default function Board({ data: initialData, onUpdateBoard }: BoardProps) {
+export default function Board({
+  data: initialData,
+  onUpdateBoard,
+}: BoardProps) {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [clickedValue, setClickedValue] = useState("");
   const [data, setData] = useState<Cell[][]>(initialData);
+  const [queenLocations, setQueenLocations] = useState<[number, number][]>([]);
 
   useEffect(() => {
     setData(initialData);
   }, [initialData]);
+
+  useEffect(() => {}, [data]);
 
   useEffect(() => {
     const handleMouseDown = () => setIsMouseDown(true);
@@ -36,11 +43,41 @@ export default function Board({ data: initialData, onUpdateBoard }: BoardProps) 
     };
   }, []);
 
-  const updateCell = (rowIndex: number, cellIndex: number, newCellValue: string) => {
+  const updateCell = (
+    rowIndex: number,
+    cellIndex: number,
+    newCellValue: string
+  ) => {
     const newData = [...data];
+    const oldCellValue = newData[rowIndex][cellIndex].value;
     newData[rowIndex][cellIndex].value = newCellValue;
+    const cellLocation: [number, number] = [rowIndex, cellIndex];
+
     setData(newData);
     onUpdateBoard(newData);
+
+    // Update queen locations
+    if (newCellValue === "Q") {
+      const validateLocation = findMatchingCoordinate(rowIndex, cellIndex, queenLocations);
+      if (validateLocation[0] !== -1 || validateLocation[1] !== -1 ) {
+        console.log('invalid Queen spot')
+      }
+      setQueenLocations(prevLocations => {
+        if (!prevLocations.some(location => location[0] === rowIndex && location[1] === cellIndex)) {
+          return [...prevLocations, cellLocation];
+        }
+        return prevLocations;
+      });
+    }
+
+    if (oldCellValue === "Q") {
+      // Remove queen location
+      setQueenLocations(prevLocations => {
+        return prevLocations.filter(
+          location => !(location[0] === rowIndex && location[1] === cellIndex)
+        );
+      });
+    }
   };
 
   return (
@@ -52,8 +89,6 @@ export default function Board({ data: initialData, onUpdateBoard }: BoardProps) 
               key={cellIndex}
               value={cell.value}
               color={cell.color}
-              rowInd={rowIndex}
-              colInd={cellIndex}
               topBorder={cell.topBorder}
               bottomBorder={cell.bottomBorder}
               leftBorder={cell.leftBorder}
@@ -62,7 +97,10 @@ export default function Board({ data: initialData, onUpdateBoard }: BoardProps) 
               clickedValue={clickedValue}
               setClickedValue={setClickedValue}
               isClear={clickedValue !== ""}
-              onUpdateCell={(newCellValue: string) => updateCell(rowIndex, cellIndex, newCellValue)}
+              isInvalidated={false}
+              onUpdateCell={(newCellValue: string) =>
+                updateCell(rowIndex, cellIndex, newCellValue)
+              }
             />
           ))}
         </div>

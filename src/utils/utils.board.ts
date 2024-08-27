@@ -6,6 +6,34 @@ import {
 import { Cell } from "../types/types.board";
 import { shuffle } from "./utils.format";
 
+export const clearBoard = (board: Cell[][]) => {
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      board[row][col].value = "";
+    }
+  }
+};
+
+type Coordinate = [number, number];
+export const findMatchingCoordinate = (
+  row: number,
+  col: number,
+  coords: Coordinate[]
+): Coordinate => {
+  for (const [x, y] of coords) {
+    if (row === x) {
+      return [row, -1]; // Same row
+    }
+    if (col === y) {
+      return [-1, col]; // Same column
+    }
+    if (Math.abs(row - x) === 1 && Math.abs(col - y) === 1) {
+      return [x, y]; // Diagonal neighbor
+    }
+  }
+  return [-1, -1]; // No match found
+};
+
 const isSafe = (board: Cell[][], row: number, col: number): boolean => {
   for (let i = 0; i < col; i++) {
     if (board[row][i].value === "Q") {
@@ -233,7 +261,7 @@ const updateCellBorders = (board: Cell[][]): Cell[][] => {
   );
 };
 
-export const getBoard = (data: Cell[][] | null ) => {
+export const getBoard = (data: Cell[][] | null) => {
   if (data) {
     return updateCellBorders(data);
   }
@@ -241,7 +269,7 @@ export const getBoard = (data: Cell[][] | null ) => {
   while (!board) {
     board = solveQueens();
   }
-  
+
   // Assign colors to queens
   let queenCount = 0;
 
