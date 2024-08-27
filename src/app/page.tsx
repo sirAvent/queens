@@ -17,11 +17,20 @@ export default function Home() {
     setBoard(boardData);
   }, [idStr, setBoard]);
 
+  const logBoardData = () => {
+    console.log(board);
+  };
+
   return (
     <main>
-      <Board data={board} />
+      <Board data={board} onUpdateBoard={setBoard} />
       <div>{boardId}</div>
-      <Board data={board} />
+      <button
+        onClick={logBoardData}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+      >
+        Log Board Data
+      </button>
     </main>
   );
 }

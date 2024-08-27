@@ -3,15 +3,20 @@ import { useState, useEffect } from "react";
 import { Cell } from "@/types/types.board";
 
 interface CellBoxProps extends Cell {
+  rowInd: number;
+  colInd: number;
   isMouseDown: boolean;
   clickedValue: string;
   isClear: boolean;
   setClickedValue: (value: string) => void;
+  onUpdateCell: (newValue: string) => void;
 }
 
 export default function CellBox({
   value,
   color,
+  rowInd,
+  colInd,
   topBorder,
   bottomBorder,
   leftBorder,
@@ -20,12 +25,13 @@ export default function CellBox({
   clickedValue,
   setClickedValue,
   isClear,
+  onUpdateCell,
 }: CellBoxProps) {
-  const [cellValue, setCellValue] = useState("");
+  const [cellValue, setCellValue] = useState(value);
 
   useEffect(() => {
     if (cellValue === "Q") {
-      console.log("Cell value changed to Q");
+      console.log("Queen at", rowInd, colInd);
     }
   }, [cellValue]);
 
@@ -39,10 +45,10 @@ export default function CellBox({
 
     setClickedValue(cellValue);
     setCellValue(newValue);
+    onUpdateCell(newValue);
   };
 
   const handleMouseEnter = () => {
-    console.log("Hovering over:", cellValue);
     let newValue = "";
     if (isMouseDown) {
       if (!isClear && cellValue === "") {
@@ -50,13 +56,15 @@ export default function CellBox({
       }
       if ((isClear && cellValue !== "") || (!isClear && cellValue === "")) {
         setCellValue(newValue);
+        onUpdateCell(newValue);
       }
     }
   };
 
   const handleMouseLeave = () => {
     if (isMouseDown && isClear) {
-      setCellValue("")
+      setCellValue("");
+      onUpdateCell("");
     }
   };
 
