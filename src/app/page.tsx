@@ -5,7 +5,7 @@ import Board from "@/components/board/board";
 import { Cell } from "@/types/types.board";
 import { getBoard } from "@/utils/utils.board";
 import { useSearchParams } from "next/navigation";
-import { decodeBoard } from "@/utils/utils.serialize";
+import { decodeBoard, encodeBoard } from "@/utils/utils.serialize";
 
 export default function Home() {
   const { board, setBoard } = useGlobalState();
@@ -24,7 +24,9 @@ export default function Home() {
   return (
     <main>
       <Board data={board} onUpdateBoard={setBoard} />
-      <div>{boardId}</div>
+      <div>Board ID: {encodeBoard(board)}</div>
+      <div>URL Param: {encodeURIComponent(encodeBoard(board))}</div>
+
       <button
         onClick={logBoardData}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
