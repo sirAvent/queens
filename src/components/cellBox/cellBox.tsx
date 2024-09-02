@@ -36,7 +36,7 @@ export default function CellBox({
   useEffect(() => {
     const handleCustomEvent = (event: Event) => {
       const customEvent = event as CustomEvent;
-      if (customEvent.detail.x === x && customEvent.detail.y === y) {
+      if (customEvent.detail.x == x && customEvent.detail.y == y) {
         let newValue = isClear ? "" : "X";
         if ((isClear && cellValue !== "") || (!isClear && cellValue === "")) {
           setCellValue(newValue);
@@ -50,7 +50,7 @@ export default function CellBox({
     return () => {
       window.removeEventListener("updateCell", handleCustomEvent);
     };
-  }, [clickedValue, onUpdateCell, x, y, cellValue, isClear]);
+  }, [clickedValue, onUpdateCell, x, y]);
 
   useEffect(() => {
     setCellValue(value);
@@ -138,7 +138,6 @@ export default function CellBox({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Inject the keyframes into the document */}
       <style>{keyframes}</style>
       <span style={spanAnimationStyles}>
         {cellValue === "X" ? (
