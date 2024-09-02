@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Cell } from "@/types/types.board";
 import CellBox from "../cellBox/cellBox";
 import { updateInvalidCells } from "@/actions/action.board";
+import { isBoardSatisfied } from "@/utils/utils.board";
+import { useGlobalState } from "@/context/GlobalContext";
 
 interface BoardProps {
   data: Cell[][];
@@ -12,6 +14,7 @@ export default function Board({
   data: initialData,
   onUpdateBoard,
 }: BoardProps) {
+  const { isWin, setIsWin } = useGlobalState();
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [clickedValue, setClickedValue] = useState("");
   const [data, setData] = useState<Cell[][]>(initialData);
@@ -34,7 +37,11 @@ export default function Board({
   }, [initialData]);
 
   useEffect(() => {
-    updateInvalidCells(getQCoordinates(data), data);
+    const isBoardValid = updateInvalidCells(getQCoordinates(data), data);
+    if (isBoardValid && isBoardSatisfied(data)) {
+      setIsWin(true);
+      console.log("WIIN");
+    }
   }, [data]);
 
   useEffect(() => {
@@ -99,6 +106,7 @@ export default function Board({
               value={cell.value}
               color={cell.color}
               isValid={cell.isValid}
+              isAnimated={isWin}
               topBorder={cell.topBorder}
               bottomBorder={cell.bottomBorder}
               leftBorder={cell.leftBorder}

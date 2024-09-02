@@ -1,15 +1,17 @@
-"use client"
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { GlobalState } from '@/types/types.globalContext';
-import { Cell } from '@/types/types.board';
+"use client";
+import { createContext, useContext, useState, ReactNode } from "react";
+import { GlobalState } from "@/types/types.globalContext";
+import { Cell } from "@/types/types.board";
 
 const GlobalContext = createContext<GlobalState | undefined>(undefined);
 
-export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const GlobalProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [board, setBoard] = useState<Cell[][]>([]);
-
+  const [isWin, setIsWin] = useState(false);
   return (
-    <GlobalContext.Provider value={{ board, setBoard }}>
+    <GlobalContext.Provider value={{ board, setBoard, isWin, setIsWin }}>
       {children}
     </GlobalContext.Provider>
   );
@@ -18,7 +20,7 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 export const useGlobalState = (): GlobalState => {
   const context = useContext(GlobalContext);
   if (context === undefined) {
-    throw new Error('useGlobalState must be used within a GlobalProvider');
+    throw new Error("useGlobalState must be used within a GlobalProvider");
   }
   return context;
 };

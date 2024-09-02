@@ -7,11 +7,30 @@ import { Cell } from "../types/types.board";
 import { shuffle } from "./utils.format";
 
 export const clearBoard = (board: Cell[][]) => {
-  for (let row = 0; row < board.length; row++) {
-    for (let col = 0; col < board[row].length; col++) {
-      board[row][col].value = "";
-    }
+  return board.map((row) =>
+    row.map((cell) => ({
+      ...cell,
+      value: "",
+      isValid: true,
+    }))
+  );
+};
+
+export const isBoardSatisfied = (board: Cell[][]): boolean => {
+  if (board.length === 0) {
+    return false;
   }
+  const numCols = board[0].length;
+
+  const allRowsSatisfied = board.every((row) =>
+    row.some((cell) => cell.value === "Q")
+  );
+
+  const allColsSatisfied = Array.from({ length: numCols }).every(
+    (_, colIndex) => board.some((row) => row[colIndex].value === "Q")
+  );
+
+  return allRowsSatisfied && allColsSatisfied;
 };
 
 const isSafe = (board: Cell[][], row: number, col: number): boolean => {

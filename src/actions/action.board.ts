@@ -2,14 +2,16 @@ import { Cell, ColorStates } from "@/types/types.board";
 import { boardColors } from "@/constants/constants.board";
 
 export const updateInvalidCells = (queenBoard: number[][], board: Cell[][]) => {
-  board.map((row) => {
+  let isValidBoard = true;
+
+	board.map((row) => {
     row.map((cell) => {
       cell.isValid = true;
     });
   });
 
   const colorSatisfied: ColorStates = boardColors.reduce((acc, color) => {
-    acc[color] = false; // Initialize each color to false
+    acc[color] = false;
     return acc;
   }, {} as ColorStates);
 
@@ -19,6 +21,7 @@ export const updateInvalidCells = (queenBoard: number[][], board: Cell[][]) => {
 
     // Check if a queen already exists in the same cell color
     if (colorSatisfied[queenColor]) {
+			isValidBoard = false;
       board.map((row) => {
         row.map((cell) => {
           if (cell.color === queenColor) {
@@ -35,6 +38,7 @@ export const updateInvalidCells = (queenBoard: number[][], board: Cell[][]) => {
 
       // Check for same row
       if (x1 === x2) {
+				isValidBoard = false;
         board[x1].map((cell) => {
           cell.isValid = false;
         });
@@ -42,6 +46,7 @@ export const updateInvalidCells = (queenBoard: number[][], board: Cell[][]) => {
 
       // Check for same column
       if (y1 === y2) {
+				isValidBoard = false;
         board.map((row) => {
           row[y1].isValid = false;
         });
@@ -49,9 +54,11 @@ export const updateInvalidCells = (queenBoard: number[][], board: Cell[][]) => {
 
       // Check for diagonal neighbors
       if (Math.abs(x1 - x2) === 1 && Math.abs(y1 - y2) === 1) {
+				isValidBoard = false;
         board[x1][y1].isValid = false;
         board[x2][y2].isValid = false;
       }
     }
   }
+	return isValidBoard;
 };
