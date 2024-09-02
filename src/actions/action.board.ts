@@ -1,17 +1,36 @@
-import { Cell } from "@/types/types.board";
+import { Cell, ColorStates } from "@/types/types.board";
+import { boardColors } from "@/constants/constants.board";
 
-export const updateInvalidCells = (
-  queenBoard: number[][],
-  board: Cell[][]
-) => {
+export const updateInvalidCells = (queenBoard: number[][], board: Cell[][]) => {
   board.map((row) => {
     row.map((cell) => {
       cell.isValid = true;
     });
   });
 
+  const colorSatisfied: ColorStates = boardColors.reduce((acc, color) => {
+    acc[color] = false; // Initialize each color to false
+    return acc;
+  }, {} as ColorStates);
+
   for (let i = 0; i < queenBoard.length; i++) {
     const [x1, y1] = queenBoard[i];
+    const queenColor = board[x1][y1].color;
+
+    if (queenColor) {
+			// Check if a queen already exists in the same cell color
+      if (colorSatisfied[queenColor]) {
+        board.map((row) => {
+          row.map((cell) => {
+            if (cell.color === queenColor) {
+              cell.isValid = false;
+            }
+          });
+        });
+      }
+
+      colorSatisfied[queenColor] = true;
+    }
 
     for (let j = i + 1; j < queenBoard.length; j++) {
       const [x2, y2] = queenBoard[j];
@@ -37,5 +56,4 @@ export const updateInvalidCells = (
       }
     }
   }
-
 };

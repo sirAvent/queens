@@ -7,3 +7,5 @@ export type Cell = {
     leftBorder: number;
     rightBorder: number;
 }
+
+export type ColorStates = Record<string, boolean>;
