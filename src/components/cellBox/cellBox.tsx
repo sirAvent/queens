@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { Cell } from "@/types/types.board";
 
 interface CellBoxProps extends Cell {
+  x: number;
+  y: number;
   isMouseDown: boolean;
   clickedValue: string;
   isInvalidated: boolean;
@@ -12,6 +14,8 @@ interface CellBoxProps extends Cell {
 }
 
 export default function CellBox({
+  x,
+  y,
   value,
   color,
   topBorder,
@@ -27,16 +31,43 @@ export default function CellBox({
 }: CellBoxProps) {
   const [cellValue, setCellValue] = useState(value);
 
+
+  useEffect(() => {
+    const handleCustomEvent = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail.x == x && customEvent.detail.y == y) {
+        let newValue = isClear ? "" : "X";
+        if ((isClear && cellValue !== "") || (!isClear && cellValue === "")) {
+          setCellValue(newValue);
+          onUpdateCell(newValue);
+        }
+      }
+    };
+
+    window.addEventListener("updateCell", handleCustomEvent);
+
+    return () => {
+      window.removeEventListener("updateCell", handleCustomEvent);
+    };
+  }, [clickedValue, onUpdateCell, x, y]);
+
   useEffect(() => {
     setCellValue(value);
   }, [value]);
 
   const handleClick = () => {
     let newValue = cellValue === "" ? "X" : cellValue === "X" ? "Q" : "";
-
     setClickedValue(cellValue);
     setCellValue(newValue);
     onUpdateCell(newValue);
+  };
+
+  const handleTouch = () => {
+    setClickedValue(cellValue);
+  };
+
+  const handleTouchEnd = () => {
+    setClickedValue("");
   };
 
   const handleMouseEnter = () => {
@@ -63,9 +94,11 @@ export default function CellBox({
 
   return (
     <div
+      data-x={x}
+      data-y={y}
       className={`${
         cellValue === "Q" && "text-[26px] font-bold"
-      } flex justify-center items-center border-black h-12 w-12 hover:brightness-125 hover:cursor-pointer select-none`}
+      } cell-box flex justify-center items-center border-black h-12 w-12 hover:brightness-125 hover:cursor-pointer select-none`}
       style={{
         background: cellColor,
         borderTopWidth: topBorder,
@@ -74,6 +107,8 @@ export default function CellBox({
         borderRightWidth: rightBorder,
       }}
       onMouseDown={handleClick}
+      onTouchStart={handleTouch}
+      onTouchEnd={handleTouchEnd}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

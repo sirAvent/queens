@@ -24,20 +24,39 @@ export default function Board({
   useEffect(() => {}, [data]);
 
   useEffect(() => {
-    const handleMouseDown = () => setIsMouseDown(true);
+    const handleMouseDown = () => {
+      setIsMouseDown(true);
+    };
     const handleMouseUp = () => {
       setIsMouseDown(false);
       setClickedValue("");
     };
 
+    const handleTouchMove = (event: TouchEvent) => {
+      setIsMouseDown(true);
+      let touch = event.touches[0];
+      let element = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (element?.classList.contains("cell-box")) {
+        const event = new CustomEvent("updateCell", {
+          detail: {
+            x: element.getAttribute("data-x"),
+            y: element.getAttribute("data-y"),
+          },
+        });
+        window.dispatchEvent(event);
+      }
+    };
+
     document.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("touchmove", handleTouchMove);
     document.addEventListener("touchstart", handleMouseDown);
     document.addEventListener("touchend", handleMouseUp);
 
     return () => {
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchstart", handleMouseDown);
       document.removeEventListener("touchend", handleMouseUp);
     };
@@ -58,12 +77,20 @@ export default function Board({
 
     // Update queen locations
     if (newCellValue === "Q") {
-      const validateLocation = findMatchingCoordinate(rowIndex, cellIndex, queenLocations);
-      if (validateLocation[0] !== -1 || validateLocation[1] !== -1 ) {
-        console.log('invalid Queen spot')
+      const validateLocation = findMatchingCoordinate(
+        rowIndex,
+        cellIndex,
+        queenLocations
+      );
+      if (validateLocation[0] !== -1 || validateLocation[1] !== -1) {
+        console.log("invalid Queen spot");
       }
-      setQueenLocations(prevLocations => {
-        if (!prevLocations.some(location => location[0] === rowIndex && location[1] === cellIndex)) {
+      setQueenLocations((prevLocations) => {
+        if (
+          !prevLocations.some(
+            (location) => location[0] === rowIndex && location[1] === cellIndex
+          )
+        ) {
           return [...prevLocations, cellLocation];
         }
         return prevLocations;
@@ -72,21 +99,23 @@ export default function Board({
 
     if (oldCellValue === "Q") {
       // Remove queen location
-      setQueenLocations(prevLocations => {
+      setQueenLocations((prevLocations) => {
         return prevLocations.filter(
-          location => !(location[0] === rowIndex && location[1] === cellIndex)
+          (location) => !(location[0] === rowIndex && location[1] === cellIndex)
         );
       });
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center select-none">
+    <div className="touch-none flex flex-col items-center justify-center select-none">
       {data.map((row, rowIndex) => (
         <div key={rowIndex} className="flex flex-row">
           {row.map((cell, cellIndex) => (
             <CellBox
               key={cellIndex}
+              x={rowIndex}
+              y={cellIndex}
               value={cell.value}
               color={cell.color}
               topBorder={cell.topBorder}
