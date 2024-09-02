@@ -1,6 +1,9 @@
 import { boardColors } from "../constants/constants.board";
 import { Cell } from "../types/types.board";
 
+// TODO: Remove serialization of Q (Queen's Position)
+// TODO: Add support for custom board sizes up to 16x16
+
 export const encodeBoard = (board: Cell[][]) => {
   const colorMap = new Map(boardColors.map((color, index) => [color, index]));
 
@@ -59,6 +62,7 @@ export const decodeBoard = (base64String: string = '') => {
       row.push({
         color: boardColors[colorIndex],
         value: value,
+        isValid: true,
         topBorder: 0,
         bottomBorder: 0,
         leftBorder: 0,
