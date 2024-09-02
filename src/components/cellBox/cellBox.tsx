@@ -7,7 +7,7 @@ interface CellBoxProps extends Cell {
   y: number;
   isMouseDown: boolean;
   clickedValue: string;
-  isInvalidated: boolean;
+  isValid: boolean;
   isClear: boolean;
   setClickedValue: (value: string) => void;
   onUpdateCell: (newValue: string) => void;
@@ -18,6 +18,7 @@ export default function CellBox({
   y,
   value,
   color,
+  isValid,
   topBorder,
   bottomBorder,
   leftBorder,
@@ -26,7 +27,6 @@ export default function CellBox({
   clickedValue,
   setClickedValue,
   isClear,
-  isInvalidated,
   onUpdateCell,
 }: CellBoxProps) {
   const [cellValue, setCellValue] = useState(value);
@@ -54,6 +54,10 @@ export default function CellBox({
   useEffect(() => {
     setCellValue(value);
   }, [value]);
+
+  useEffect(() => {
+    
+  }, [isValid]);
 
   const handleClick = () => {
     let newValue = cellValue === "" ? "X" : cellValue === "X" ? "Q" : "";
@@ -88,9 +92,10 @@ export default function CellBox({
     }
   };
 
-  const cellColor: string = isInvalidated
-    ? `linear-gradient(45deg, ${color} 20%, red 23%, ${color} 26%, ${color} 47%, red 50%, ${color} 53%, ${color} 72%, red 75%, ${color} 78%)`
-    : `${color}`;
+  const cellColor: string = !isValid
+  ? `linear-gradient(45deg, ${color} 20%, red 23%, ${color} 26%, ${color} 47%, red 50%, ${color} 53%, ${color} 72%, red 75%, ${color} 78%)`
+  : `${color}`;
+
 
   return (
     <div
