@@ -17,18 +17,16 @@ export const updateInvalidCells = (queenBoard: number[][], board: Cell[][]) => {
     const [x1, y1] = queenBoard[i];
     const queenColor = board[x1][y1].color;
 
-    if (queenColor) {
-			// Check if a queen already exists in the same cell color
-      if (colorSatisfied[queenColor]) {
-        board.map((row) => {
-          row.map((cell) => {
-            if (cell.color === queenColor) {
-              cell.isValid = false;
-            }
-          });
+    // Check if a queen already exists in the same cell color
+    if (colorSatisfied[queenColor]) {
+      board.map((row) => {
+        row.map((cell) => {
+          if (cell.color === queenColor) {
+            cell.isValid = false;
+          }
         });
-      }
-
+      });
+    } else {
       colorSatisfied[queenColor] = true;
     }
 
