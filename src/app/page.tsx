@@ -51,8 +51,9 @@ function HomeContent() {
 
   const onShare = () => {
     const boardId = encodeBoard(board);
-    const websiteUrl = window.location.origin;
-    const fullUrl = `${websiteUrl}?id=${encodeURIComponent(boardId)}`;
+    const baseUrl = window.location.origin;
+    const path = window.location.pathname;
+    const fullUrl = `${baseUrl}${path}?id=${encodeURIComponent(boardId)}`;
     const shareData = {
       title: "Queens",
       text: `Can you beat my time of ${formatTime(
