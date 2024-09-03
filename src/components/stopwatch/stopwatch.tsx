@@ -20,7 +20,7 @@ export interface StopwatchRef {
 const Stopwatch = forwardRef<StopwatchRef, StopwatchProps>(
   ({ isRunning, setIsRunning }, ref) => {
     const [time, setTime] = useState<number>(0);
-    const { isWin } = useGlobalState();
+    const { isWin, isStart } = useGlobalState();
 
     useEffect(() => {
       let interval: NodeJS.Timeout | undefined;
@@ -42,7 +42,9 @@ const Stopwatch = forwardRef<StopwatchRef, StopwatchProps>(
       if (isWin) {
         setIsRunning(false);
       } else {
-        setIsRunning(true);
+        if (isStart) {
+          setIsRunning(true);
+        }
       }
     }, [isWin, setIsRunning]);
 
@@ -58,7 +60,7 @@ const Stopwatch = forwardRef<StopwatchRef, StopwatchProps>(
 
     return (
       <div>
-        <div>{formatTime(time)}</div>
+        <div>⏱ {formatTime(time)}</div>
       </div>
     );
   }

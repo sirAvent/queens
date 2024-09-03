@@ -55,10 +55,8 @@ function HomeContent() {
     const path = window.location.pathname;
     const fullUrl = `${baseUrl}${path}?id=${encodeURIComponent(boardId)}`;
     const shareData = {
-      title: "Queens",
-      text: `Can you beat my time of ${formatTime(
-        stopwatchRef.current?.time
-      )}? Check out this game and try to top my score!`,
+      title: "Queens Game",
+      text: `Try to beat my time of ${formatTime(stopwatchRef.current?.time)}`,
       url: fullUrl,
     };
 
@@ -93,20 +91,28 @@ function HomeContent() {
             </button>
           </div>
         </div>
-        <button
-          className={`${
-            isStart && "hidden"
-          } text-xl border border-foreground px-8 py-2 rounded-full`}
-          onClick={onStart}
-        >
-          Play
-        </button>
+        <div className={`${isStart && "hidden"} text-center`}>
+          <div className="-mt-6 mb-6">
+            <h1 className="text-[2.4rem] font-bold">Queens Game</h1>
+            <h2 className="text-lg">Recreated by Avent</h2>
+          </div>
+          <button
+            className={`text-xl color-backgroundEnd text-backgroundEnd bg-foreground px-8 py-2 rounded-full`}
+            onClick={onStart}
+          >
+            Play
+          </button>
+        </div>
       </div>
 
       <div className="absolute top-0 w-svw webkit-center">
         {/* <div>Board ID: {encodeBoard(board)}</div>
         <div>URL Param: {encodeURIComponent(encodeBoard(board))}</div> */}
-        <div className="flex flex-row items-center justify-between self-center text-lg px-4 pt-4 max-w-lg">
+        <div
+          className={`${
+            !isStart && "hidden"
+          } flex flex-row items-center justify-between self-center text-lg px-4 pt-4 max-w-lg`}
+        >
           <Stopwatch
             isRunning={isRunning}
             setIsRunning={setIsRunning}
@@ -120,7 +126,11 @@ function HomeContent() {
           </button>
         </div>
       </div>
-      <div className="absolute bottom-0 w-svw webkit-center p-4">
+      <div
+        className={`${
+          !isStart && "hidden"
+        } absolute bottom-0 w-svw webkit-center p-4`}
+      >
         <button
           onClick={newGame}
           className="border border-foreground px-5 py-3 rounded-full"
