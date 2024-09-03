@@ -108,12 +108,12 @@ export default function CellBox({
   `;
 
   // Compute the delay based on the x prop
-  const animationDelay = `${x / 3 + 1}s`;
+  const animationDelay = `${x / 3 + 0.3}s`;
 
   const spanAnimationStyles =
     isAnimated && cellValue === "Q"
       ? {
-          animation: `scaleUpDown 2s linear`,
+          animation: `scaleUpDown 1.8s linear`,
           animationDelay: animationDelay,
         }
       : {};
@@ -126,6 +126,7 @@ export default function CellBox({
         cellValue === "Q" && "text-[26px] font-bold"
       } cell-box flex justify-center items-center border-black h-12 w-12 hover:brightness-125 hover:cursor-pointer select-none`}
       style={{
+        color: "black",
         background: cellColor,
         borderTopWidth: topBorder,
         borderBottomWidth: bottomBorder,

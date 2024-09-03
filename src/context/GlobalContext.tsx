@@ -10,8 +10,10 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [board, setBoard] = useState<Cell[][]>([]);
   const [isWin, setIsWin] = useState(false);
+  const [isStart, setIsStart] = useState(false);
+
   return (
-    <GlobalContext.Provider value={{ board, setBoard, isWin, setIsWin }}>
+    <GlobalContext.Provider value={{ board, setBoard, isWin, setIsWin, isStart, setIsStart }}>
       {children}
     </GlobalContext.Provider>
   );

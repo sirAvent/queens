@@ -39,8 +39,9 @@ export default function Board({
   useEffect(() => {
     const isBoardValid = updateInvalidCells(getQCoordinates(data), data);
     if (isBoardValid && isBoardSatisfied(data)) {
-      setIsWin(true);
-      console.log("WIIN");
+      setTimeout(() => {
+        setIsWin(true);
+      }, 200)
     }
   }, [data]);
 
@@ -95,7 +96,7 @@ export default function Board({
   };
 
   return (
-    <div className="touch-none flex flex-col items-center justify-center select-none">
+    <div className={` ${isWin && 'pointer-events-none'} w-fit touch-none flex flex-col items-center justify-center select-none`}>
       {data.map((row, rowIndex) => (
         <div key={rowIndex} className="flex flex-row">
           {row.map((cell, cellIndex) => (

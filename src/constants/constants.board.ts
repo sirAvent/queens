@@ -1,6 +1,6 @@
 export const gray = "#CCCCCC";
 
-export const cellBorderWidth = 0.5;
+export const cellBorderWidth = 0.4;
 
 export const boardColors = [
   "#FFB3BA", // Pastel Pink
