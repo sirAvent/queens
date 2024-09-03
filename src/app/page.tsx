@@ -13,13 +13,22 @@ function HomeContent() {
     useGlobalState();
   const boardId = useSearchParams().get("id");
   const idStr = boardId ? decodeURIComponent(boardId) : "";
-  const boardData = getBoard(decodeBoard(idStr)) as Cell[][];
+  const [boardData, setBoardData] = useState<Cell[][]>(
+    getBoard(decodeBoard(idStr))
+  );
+
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const stopwatchRef = useRef<StopwatchRef>(null);
 
   useEffect(() => {
-    setBoard(boardData);
+    const data = getBoard(decodeBoard(idStr));
+    setBoardData(data);
+    setBoard(data);
   }, [idStr, setBoard]);
+
+  useEffect(() => {
+    setBoard(boardData);
+  }, [boardData, setBoard]);
 
   const newGame = () => {
     setBoard(getBoard(null));
@@ -28,8 +37,6 @@ function HomeContent() {
       stopwatchRef.current.reset();
     }
     setIsStart(true);
-
-    // setIsStart(false);
   };
 
   const onClear = () => {
@@ -76,8 +83,6 @@ function HomeContent() {
         </div>
       </div>
       <div className="absolute bottom-0 w-svw webkit-center p-4">
-        {/* <div>Board ID: {encodeBoard(board)}</div>
-        <div>URL Param: {encodeURIComponent(encodeBoard(board))}</div> */}
         <button
           onClick={newGame}
           className="border border-foreground px-5 py-3 rounded-full"

@@ -66,4 +66,7 @@ const Stopwatch = forwardRef<StopwatchRef, StopwatchProps>(
   }
 );
 
+// Set display name for better debugging
+Stopwatch.displayName = "Stopwatch";
+
 export default Stopwatch;

@@ -50,7 +50,7 @@ export default function CellBox({
     return () => {
       window.removeEventListener("updateCell", handleCustomEvent);
     };
-  }, [clickedValue, onUpdateCell, x, y, cellValue]);
+  }, [clickedValue, onUpdateCell, x, y, cellValue, isClear]);
 
   useEffect(() => {
     setCellValue(value);
