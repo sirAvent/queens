@@ -5,6 +5,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 import { useGlobalState } from "@/context/GlobalContext";
+import { formatTime } from "@/utils/utils.format";
 
 interface StopwatchProps {
   isRunning: boolean;
@@ -13,6 +14,7 @@ interface StopwatchProps {
 
 export interface StopwatchRef {
   reset: () => void;
+  time: number;
 }
 
 const Stopwatch = forwardRef<StopwatchRef, StopwatchProps>(
@@ -48,17 +50,11 @@ const Stopwatch = forwardRef<StopwatchRef, StopwatchProps>(
       setTime(0);
     };
 
-    // Expose the reset method via ref
+    // Expose the reset method and time via ref
     useImperativeHandle(ref, () => ({
       reset: handleReset,
+      time: time,
     }));
-
-    const formatTime = (time: number): string => {
-      const getSeconds = `0${Math.floor((time / 1000) % 60)}`.slice(-2);
-      const getMinutes = `${Math.floor((time / 60000) % 60)}`.slice(-2);
-
-      return `${getMinutes}:${getSeconds}`;
-    };
 
     return (
       <div>
