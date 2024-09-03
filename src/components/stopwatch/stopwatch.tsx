@@ -39,6 +39,8 @@ const Stopwatch = forwardRef<StopwatchRef, StopwatchProps>(
     useEffect(() => {
       if (isWin) {
         setIsRunning(false);
+      } else {
+        setIsRunning(true);
       }
     }, [isWin, setIsRunning]);
 
