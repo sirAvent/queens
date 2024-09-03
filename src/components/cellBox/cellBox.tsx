@@ -50,7 +50,7 @@ export default function CellBox({
     return () => {
       window.removeEventListener("updateCell", handleCustomEvent);
     };
-  }, [clickedValue, onUpdateCell, x, y]);
+  }, [clickedValue, onUpdateCell, x, y, cellValue]);
 
   useEffect(() => {
     setCellValue(value);
@@ -113,7 +113,7 @@ export default function CellBox({
   const spanAnimationStyles =
     isAnimated && cellValue === "Q"
       ? {
-          animation: `scaleUpDown 1.8s linear`,
+          animation: `scaleUpDown 1.3s linear`,
           animationDelay: animationDelay,
         }
       : {};

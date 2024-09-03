@@ -21,10 +21,6 @@ function HomeContent() {
     setBoard(boardData);
   }, [idStr, setBoard]);
 
-  const logBoardData = () => {
-    console.log(board);
-  };
-
   const newGame = () => {
     setBoard(getBoard(null));
     setIsWin(false);

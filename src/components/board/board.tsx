@@ -43,7 +43,7 @@ export default function Board({
         setIsWin(true);
       }, 200)
     }
-  }, [data]);
+  }, [data, setIsWin]);
 
   useEffect(() => {
     const handleMouseDown = () => {

@@ -1,10 +1,10 @@
-import { useGlobalState } from "@/context/GlobalContext";
 import React, {
   useState,
   useEffect,
   forwardRef,
   useImperativeHandle,
 } from "react";
+import { useGlobalState } from "@/context/GlobalContext";
 
 interface StopwatchProps {
   isRunning: boolean;
@@ -26,10 +26,14 @@ const Stopwatch = forwardRef<StopwatchRef, StopwatchProps>(
         interval = setInterval(() => {
           setTime((prevTime) => prevTime + 10);
         }, 10);
-      } else if (!isRunning) {
+      } else if (!isRunning && interval) {
         clearInterval(interval);
       }
-      return () => clearInterval(interval);
+      return () => {
+        if (interval) {
+          clearInterval(interval);
+        }
+      };
     }, [isRunning]);
 
     useEffect(() => {
